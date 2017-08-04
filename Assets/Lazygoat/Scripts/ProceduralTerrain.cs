@@ -14,6 +14,7 @@ public class ProceduralTerrain : MonoBehaviour
     private float[,,] currAlphamaps;
     private List<TerrainGen> terrainGenerators;
     private List<BiomeGen> biomeGenerators;
+    private bool isDirty = true;
 
     private const int linesToRender = 10;
 
@@ -32,29 +33,48 @@ public class ProceduralTerrain : MonoBehaviour
         RefreshTerrainData();
     }
 
+    public void InvalidateTerrainGenerators()
+    {
+        terrainGenerators = null;
+        isDirty = true;
+    }
+
+    public void InvalidateBiomeGenerators()
+    {
+        biomeGenerators = null;
+        isDirty = true;
+    }
+
     public bool IsTerrainGenDataDirty
     {
         get
         {
-            foreach(var c in GetComponents<Component>())
-            {
-                var gen = c as TerrainGen;
-                if (gen != null && gen.IsDirty)
+            foreach (var gen in TerrainGenerators)
+                if (gen.IsDirty)
                     return true;
-            }
-
-            return false;
+            return isDirty;
         }
     }
 
-    void CleanupGeneratorsDirtyFlag()
+    public bool IsBiomeGenDataDirty
     {
-        foreach (var c in GetComponents<Component>())
+        get
         {
-            var gen = c as TerrainGen;
-            if (gen != null && gen.IsDirty)
-                gen.CleanupDirtyFlag();
+            foreach (var gen in BiomeGenerators)
+                if (gen.IsDirty)
+                    return true;
+            return isDirty;
         }
+    }
+
+    private void CleanupGeneratorsDirtyFlag()
+    {
+        foreach (var gen in TerrainGenerators)
+            gen.CleanupDirtyFlag();
+        foreach (var gen in BiomeGenerators)
+            gen.CleanupDirtyFlag();
+
+        isDirty = false;
     }
 
     public void SmartUpdate()
@@ -66,7 +86,7 @@ public class ProceduralTerrain : MonoBehaviour
             currAlphamaps = null;
         }
 
-        if (IsTerrainGenDataDirty)
+        if (IsTerrainGenDataDirty || IsBiomeGenDataDirty)
         {
             currTX = currTY = 0;
             currAX = currAY = 0;
@@ -89,7 +109,7 @@ public class ProceduralTerrain : MonoBehaviour
             gen.Generate(terrainHeight, terrainX, terrainY, nx, ny, alphamaps);
     }
 
-    internal List<TerrainGen> TerrainGenerators
+    public List<TerrainGen> TerrainGenerators
     {
         get
         {
@@ -107,7 +127,7 @@ public class ProceduralTerrain : MonoBehaviour
         }
     }
 
-    internal List<BiomeGen> BiomeGenerators
+    public List<BiomeGen> BiomeGenerators
     {
         get
         {

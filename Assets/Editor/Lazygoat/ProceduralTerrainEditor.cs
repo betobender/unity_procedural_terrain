@@ -1,6 +1,7 @@
 ﻿
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,44 +12,39 @@ public class ProceduralTerrainEditor : Editor
     {
         var pTerrain = target as ProceduralTerrain;
 
-        if(GUILayout.Button("Add Noise Terrain Generator"))
-        {
-            if (pTerrain.GetComponent<NoiseBasedTerrainGen>() != null)
-                Debug.LogWarning("This terrain has already one Noise Terrain Generator");
-            else pTerrain.gameObject.AddComponent<NoiseBasedTerrainGen>();
-        }
+        EditorGUILayout.LabelField("Sub-components", EditorStyles.boldLabel);
 
-        if (GUILayout.Button("Add Island Generator"))
-        {
-            if (pTerrain.GetComponent<IslandGen>() != null)
-                Debug.LogWarning("This terrain has already one Island Generator");
-            else pTerrain.gameObject.AddComponent<IslandGen>();
-        }
+        if (pTerrain.GetComponent<NoiseBasedTerrainGen>() == null)
+            if (GUILayout.Button("Add Noise Terrain Generator"))
+                pTerrain.gameObject.AddComponent<NoiseBasedTerrainGen>();
 
-        if (GUILayout.Button("Add Terrace Generator"))
-        {
-            if (pTerrain.GetComponent<TerraceGen>() != null)
-                Debug.LogWarning("This terrain has already one Terrace Generator");
-            else pTerrain.gameObject.AddComponent<TerraceGen>();
-        }
+        if (pTerrain.GetComponent<IslandGen>() == null)
+            if (GUILayout.Button("Add Island Generator"))
+                pTerrain.gameObject.AddComponent<IslandGen>();
 
-        if (GUILayout.Button("Add Noise Biome Generator"))
-        {
-            if (pTerrain.GetComponent<NoiseBasedBiomeGen>() != null)
-                Debug.LogWarning("This terrain has already one Noise Biome Generator");
-            else pTerrain.gameObject.AddComponent<NoiseBasedBiomeGen>();
-        }
-        /*
+        if (pTerrain.GetComponent<TerraceGen>() == null)
+            if (GUILayout.Button("Add Terrace Generator"))
+                pTerrain.gameObject.AddComponent<TerraceGen>();
 
-        EditorGUILayout.LabelField("Terraces Properties", EditorStyles.boldLabel);
-        pTerrain.Terraces = EditorGUILayout.Toggle("Enable Terraces", pTerrain.Terraces);
-        if (pTerrain.terraces)
-        {
-            pTerrain.TerraceSteps = EditorGUILayout.IntSlider("Terrace Steps", pTerrain.TerraceSteps, 1, 30);
-        }
+        if (pTerrain.GetComponent<NoiseBasedBiomeGen>() == null)
+            if (GUILayout.Button("Add Noise Biome Generator"))
+                pTerrain.gameObject.AddComponent<NoiseBasedBiomeGen>();
 
-        //GUILayout.BeginArea(new Rect(0, this., 30, 100), "Batata");
-        EditorGUILayout.LabelField("Biome Properties", EditorStyles.boldLabel);*/
+        EditorGUILayout.LabelField("Current Pipelines", EditorStyles.helpBox);
+        EditorGUILayout.LabelField("Terrain:", EditorStyles.boldLabel);
+        foreach (var gen in pTerrain.TerrainGenerators)
+            EditorGUILayout.LabelField(" > " + gen.ToString());
+        EditorGUILayout.LabelField("Biome:", EditorStyles.boldLabel);
+        foreach (var gen in pTerrain.BiomeGenerators)
+            EditorGUILayout.LabelField(" > " + gen.ToString());
+
+
+        EditorGUILayout.LabelField("Manual actions", EditorStyles.boldLabel);
+        if (GUILayout.Button("Invalidate Generators"))
+        {
+            pTerrain.InvalidateBiomeGenerators();
+            pTerrain.InvalidateTerrainGenerators();
+        }
 
 
         if (pTerrain.enabled)

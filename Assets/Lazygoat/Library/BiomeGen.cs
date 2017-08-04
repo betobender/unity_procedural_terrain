@@ -1,5 +1,5 @@
 ﻿using System;
-interface BiomeGen
+public interface BiomeGen
 {
     bool IsDirty { get; }
     void CleanupDirtyFlag();

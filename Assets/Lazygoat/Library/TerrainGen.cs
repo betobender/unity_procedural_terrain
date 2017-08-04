@@ -1,6 +1,6 @@
 ﻿using System;
 
-interface TerrainGen
+public interface TerrainGen
 {
     bool IsDirty { get; }
     void CleanupDirtyFlag();
