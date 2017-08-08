@@ -40,6 +40,10 @@ public class ProceduralTerrainEditor : Editor
 
 
         EditorGUILayout.LabelField("Manual actions", EditorStyles.boldLabel);
+
+        if (GUILayout.Button("Invalidate Everything"))
+            pTerrain.Invalidate();
+
         if (GUILayout.Button("Invalidate Generators"))
         {
             pTerrain.InvalidateBiomeGenerators();

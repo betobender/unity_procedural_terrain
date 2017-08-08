@@ -33,6 +33,16 @@ public class ProceduralTerrain : MonoBehaviour
         RefreshTerrainData();
     }
 
+    public void Invalidate()
+    {
+        InvalidateBiomeGenerators();
+        InvalidateTerrainGenerators();
+        currHeights = null;
+        currAlphamaps = null;
+        currTX = currTY = 0;
+        currAX = currAY = 0;
+    }
+
     public void InvalidateTerrainGenerators()
     {
         terrainGenerators = null;

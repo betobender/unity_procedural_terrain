@@ -10,7 +10,6 @@ public class NoiseBasedBiomeGenEditor : Editor
     public override void OnInspectorGUI()
     {
         var gen = target as NoiseBasedBiomeGen;
-        //var terrain = gen.GetComponent<Terrain>();
 
         if (GUILayout.Button("Add Texture"))
             AddProp();
@@ -26,11 +25,9 @@ public class NoiseBasedBiomeGenEditor : Editor
             prop.textureId = EditorGUILayout.IntField("Texture Index", prop.textureId);
             prop.minHeight = EditorGUILayout.Slider("Min Height", prop.minHeight, 0, prop.maxHeight);
             prop.maxHeight = EditorGUILayout.Slider("Max Height", prop.maxHeight, prop.minHeight, 1f);
+            prop.maxIntensity = EditorGUILayout.Slider("Max Intensity", prop.maxIntensity, prop.minHeight, 1f);
             EditorGUILayout.LabelField("Height Range: [" + prop.minHeight + ";" + prop.maxHeight + "]", EditorStyles.boldLabel);
             
-            //Texture2D texture = (prop.textureId >= 0 && prop.textureId < terrain.terrainData.alphamapTextures.Length) ? terrain.terrainData.alphamapTextures[prop.textureId] : null;
-            //EditorGUILayout.ObjectField("Icon", texture, typeof(Texture2D));
-
             if (GUILayout.Button("Remove Texture"))
                 DeleteProp(prop);
 
